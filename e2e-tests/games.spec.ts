@@ -24,6 +24,17 @@ test.describe('Game Listing and Navigation', () => {
     });
   });
 
+  test('should display ratings and the unrated fallback on game cards', async ({ page }) => {
+    await page.goto('/');
+
+    const ratedCard = page.locator('[data-testid="game-card"][data-game-title="DevOps Dominion"]');
+    const unratedCard = page.locator('[data-testid="game-card"][data-game-title="Bug Buster Brainteaser"]');
+
+    await expect(ratedCard.getByTestId('game-rating')).toHaveText(/\d\.\d$/);
+    await expect(unratedCard.getByTestId('game-rating-fallback')).toHaveText('No rating yet');
+    await expect(unratedCard.getByTestId('game-rating')).toHaveCount(0);
+  });
+
   test('should navigate to correct game details page when clicking on a game', async ({ page }) => {
     let gameId: string | null;
     let gameTitle: string | null;
