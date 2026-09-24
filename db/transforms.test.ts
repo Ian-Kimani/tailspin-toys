@@ -102,6 +102,9 @@ describe('ratingFromTitle', () => {
     it('stays within the inclusive range [3.0, 5.0]', () => {
         for (const title of ['A', 'Pipeline Conquest', 'zzz', 'Server Siege', '']) {
             const rating = ratingFromTitle(title);
+            if (rating === null) {
+                continue;
+            }
             expect(rating).toBeGreaterThanOrEqual(3.0);
             expect(rating).toBeLessThanOrEqual(5.0);
         }
@@ -109,6 +112,13 @@ describe('ratingFromTitle', () => {
 
     it('produces at most one decimal place', () => {
         const rating = ratingFromTitle('Some Title');
+        if (rating === null) {
+            throw new Error('Expected Some Title to have a rating');
+        }
         expect(Math.round(rating * 10)).toBeCloseTo(rating * 10, 5);
+    });
+
+    it('can produce an unrated game deterministically', () => {
+        expect(ratingFromTitle('Bug Buster Brainteaser')).toBeNull();
     });
 });

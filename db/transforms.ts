@@ -119,15 +119,20 @@ export function uniquePublishers(rows: GameCsvRow[]): string[] {
 
 /**
  * Deterministically derive a star rating in [3.0, 5.0] (one decimal place)
- * from the game title. Using a stable hash instead of Math.random keeps
- * static builds reproducible.
+ * from the game title, or leave a title unrated. Using a stable hash instead
+ * of Math.random keeps static builds reproducible.
  */
-export function ratingFromTitle(title: string): number {
+export function ratingFromTitle(title: string): number | null {
     let hash = 0;
     for (let i = 0; i < title.length; i++) {
         hash = (hash * 31 + title.charCodeAt(i)) >>> 0;
     }
+    // One bucket represents games that have not been rated yet.
+    const bucket = hash % 22;
+    if (bucket === 21) {
+        return null;
+    }
     // 21 buckets -> 3.0, 3.1, ... 5.0
-    const tenths = hash % 21;
+    const tenths = bucket;
     return Math.round((3.0 + tenths / 10) * 10) / 10;
 }
