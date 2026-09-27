@@ -9,15 +9,19 @@ test.describe('Game Listing and Navigation', () => {
 
     await test.step('Filter by category', async () => {
       await page.getByLabel('Strategy').check();
-      await expect(visibleCards).toHaveCount(4);
+      await page.getByLabel('Puzzle').check();
+      await expect(visibleCards).toHaveCount(8);
       await expect(page).toHaveURL(/category=1/);
+      await expect(page).toHaveURL(/category=2/);
     });
 
     await test.step('Combine category and publisher filters', async () => {
       await page.getByTestId('publisher-filter').selectOption({ label: 'CodeForge Studios' });
-      await expect(visibleCards).toHaveCount(1);
+      await expect(visibleCards).toHaveCount(2);
       await expect(page.getByTestId('game-card').filter({ hasText: 'DevOps Dominion' })).toBeVisible();
-      await expect(page).toHaveURL(/category=1.*publisher=1/);
+      await expect(page).toHaveURL(/category=1/);
+      await expect(page).toHaveURL(/category=2/);
+      await expect(page).toHaveURL(/publisher=1/);
     });
 
     await test.step('Clear filters', async () => {
