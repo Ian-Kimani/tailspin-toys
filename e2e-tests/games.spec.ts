@@ -1,6 +1,32 @@
 import { test, expect, type Response } from '@playwright/test';
 
 test.describe('Game Listing and Navigation', () => {
+  test('should filter games by category, publisher, and their combination', async ({ page }) => {
+    await page.goto('/');
+
+    const visibleCards = page.locator('[data-testid="game-card"]:visible');
+    await expect(visibleCards).toHaveCount(21);
+
+    await test.step('Filter by category', async () => {
+      await page.getByLabel('Strategy').check();
+      await expect(visibleCards).toHaveCount(4);
+      await expect(page).toHaveURL(/category=1/);
+    });
+
+    await test.step('Combine category and publisher filters', async () => {
+      await page.getByTestId('publisher-filter').selectOption({ label: 'CodeForge Studios' });
+      await expect(visibleCards).toHaveCount(1);
+      await expect(page.getByTestId('game-card').filter({ hasText: 'DevOps Dominion' })).toBeVisible();
+      await expect(page).toHaveURL(/category=1.*publisher=1/);
+    });
+
+    await test.step('Clear filters', async () => {
+      await page.getByTestId('clear-filters').click();
+      await expect(visibleCards).toHaveCount(21);
+      await expect(page).toHaveURL('/');
+    });
+  });
+
   test('should display games with titles on index page', async ({ page }) => {
     await test.step('Navigate to homepage', async () => {
       await page.goto('/');

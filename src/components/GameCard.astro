@@ -4,6 +4,10 @@ import Tag from './Tag.astro';
 import StarRating from './StarRating.astro';
 import ArrowRight from '../assets/icons/arrow-right.svg';
 
+/**
+ * Renders a linked game summary card, including filter metadata for the catalog page.
+ * @param game Game summary and related category/publisher data to display.
+ */
 interface Props {
     game: Game;
 }
@@ -17,6 +21,8 @@ const { game } = Astro.props;
     data-testid="game-card"
     data-game-id={game.id}
     data-game-title={game.title}
+    data-game-category-id={game.category?.id}
+    data-game-publisher-id={game.publisher?.id}
 >
     <div class="p-6 relative">
         <div class="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
