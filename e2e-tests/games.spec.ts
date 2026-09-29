@@ -125,6 +125,13 @@ test.describe('Game Listing and Navigation', () => {
         await expect(page.getByTestId('game-details-category')).not.toBeEmpty();
       }
     });
+
+    await test.step('Verify category and publisher descriptions are displayed', async () => {
+      await expect(page.getByTestId('game-details-category-description')).toContainText('Strategy');
+      await expect(page.getByTestId('game-details-category-description')).not.toBeEmpty();
+      await expect(page.getByTestId('game-details-publisher-description')).toContainText('CodeForge Studios');
+      await expect(page.getByTestId('game-details-publisher-description')).not.toBeEmpty();
+    });
   });
 
   test('should display a button to back the game', async ({ page }) => {
